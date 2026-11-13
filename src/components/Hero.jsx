@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import './Hero.css'
 
 // Dashboard tab data
@@ -161,45 +161,21 @@ const dashboardTabs = [
 function Hero() {
   const [loaded, setLoaded] = useState(false)
   const [activeTab, setActiveTab] = useState('feedback')
-  const [videoError, setVideoError] = useState(false)
-  const videoRef = useRef(null)
-  const prefersReducedMotion = useRef(false)
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
-    prefersReducedMotion.current = mediaQuery.matches
-    const handler = (e) => { prefersReducedMotion.current = e.matches }
-    mediaQuery.addEventListener('change', handler)
-    return () => mediaQuery.removeEventListener('change', handler)
-  }, [])
 
   useEffect(() => {
     setLoaded(true)
   }, [])
 
-  const handleVideoError = () => {
-    setVideoError(true)
-  }
-
   return (
     <section className="hero" aria-label="Introduction">
-      {/* Video Background */}
+      {/* Hero Background */}
       <div className="hero-bg">
-        {!videoError && !prefersReducedMotion.current && (
-          <video
-            ref={videoRef}
-            className="video-bg"
-            autoPlay
-            muted
-            loop
-            playsInline
-            poster="/hero-poster.webp"
-            onError={handleVideoError}
-            aria-hidden="true"
-          >
-            <source src="https://assets.mixkit.co/videos/preview/mixkit-abstract-technology-background-2734-large.mp4" type="video/mp4" />
-          </video>
-        )}
+        <img
+          src="/hero-poster.webp"
+          alt=""
+          className="hero-poster"
+          aria-hidden="true"
+        />
         <div className="video-overlay" aria-hidden="true"></div>
         <div className="hero-glow glow-1" aria-hidden="true"></div>
         <div className="hero-glow glow-2" aria-hidden="true"></div>

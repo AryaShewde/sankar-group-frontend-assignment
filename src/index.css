@@ -2,6 +2,8 @@
    Proofdesk — Cinematic Premium Design Tokens
    ============================================ */
 
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Inter:wght@300..600&display=swap');
+
 *,
 *::before,
 *::after {
@@ -104,23 +106,6 @@
   :root {
     --container-padding: 4rem;
   }
-}
-
-/* Font Loading */
-@font-face {
-  font-family: 'Space Grotesk';
-  src: url('https://fonts.gstatic.com/s/spacegrotesk/v20/VdGHAYcV6wKfTqjLxQ.woff2') format('woff2');
-  font-weight: 300 700;
-  font-display: swap;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Inter';
-  src: url('https://fonts.gstatic.com/s/inter/v19/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZ9hjp-Ek-_EeA.woff2') format('woff2');
-  font-weight: 300 700;
-  font-display: swap;
-  font-style: normal;
 }
 
 html {

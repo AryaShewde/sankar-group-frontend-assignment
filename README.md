@@ -149,12 +149,13 @@ submission/
 
 ## 📦 Submission Archive
 
-**Location**: `submission/Proofdesk-Source.zip` (1.8 MB, 33 files)
+**Location**: `submission/Proofdesk-Source.zip` (4.9 MB, 43 files)
 
 Contains:
-- Complete source code (`src/`, `public/`, config files)
+- Complete source code (`src/`, `public/`)
 - Documentation (`README.md`, `DESIGN-NOTES.md`)
-- Screenshots (3 genuine Playwright captures)
+- Screenshots (3 Playwright captures at proper viewport sizes)
+- Build configuration and scripts
 - Excludes: `node_modules/`, `.git/`, `dist/`, temp files
 
 ---
