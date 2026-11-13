@@ -18,6 +18,7 @@ function ContactForm() {
   const [form, setForm] = useState(initialForm)
   const [errors, setErrors] = useState(initialErrors)
   const [submitted, setSubmitted] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
 
   const validate = () => {
     const newErrors = { ...initialErrors }
@@ -54,9 +55,12 @@ function ContactForm() {
     }
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     if (validate()) {
+      setSubmitting(true)
+      await new Promise(resolve => setTimeout(resolve, 1200))
+      setSubmitting(false)
       setSubmitted(true)
     }
   }
@@ -64,10 +68,12 @@ function ContactForm() {
   if (submitted) {
     return (
       <div className="contact-success" role="alert">
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
-          <polyline points="9 12 11 14 15 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
+        <div className="success-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5"/>
+            <polyline points="9 12 11 14 15 10" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
         <h3>Thanks for reaching out!</h3>
         <p>This is a frontend demo — no actual submission was made. In a real application, your message would be sent to our team and we&apos;d follow up within 24 hours.</p>
         <button type="button" className="btn btn-secondary" onClick={() => { setForm(initialForm); setSubmitted(false); setErrors(initialErrors); }}>
@@ -81,7 +87,7 @@ function ContactForm() {
     <form onSubmit={handleSubmit} className="contact-form" noValidate>
       <div className="form-row">
         <div className="form-group">
-          <label htmlFor="name">Full Name *</label>
+          <label htmlFor="name">Full Name <span className="required">*</span></label>
           <input
             type="text"
             id="name"
@@ -91,11 +97,12 @@ function ContactForm() {
             placeholder="Your full name"
             aria-invalid={!!errors.name}
             aria-describedby={errors.name ? 'name-error' : undefined}
+            className={`form-input ${errors.name ? 'error' : ''}`}
           />
-          {errors.name && <span id="name-error" className="error-msg" role="alert">{errors.name}</span>}
+          {errors.name && <span id="name-error" className="form-error" role="alert">{errors.name}</span>}
         </div>
         <div className="form-group">
-          <label htmlFor="email">Email Address *</label>
+          <label htmlFor="email">Email Address <span className="required">*</span></label>
           <input
             type="email"
             id="email"
@@ -105,8 +112,9 @@ function ContactForm() {
             placeholder="you@company.com"
             aria-invalid={!!errors.email}
             aria-describedby={errors.email ? 'email-error' : undefined}
+            className={`form-input ${errors.email ? 'error' : ''}`}
           />
-          {errors.email && <span id="email-error" className="error-msg" role="alert">{errors.email}</span>}
+          {errors.email && <span id="email-error" className="form-error" role="alert">{errors.email}</span>}
         </div>
       </div>
 
@@ -120,12 +128,13 @@ function ContactForm() {
             value={form.company}
             onChange={handleChange}
             placeholder="Optional"
+            className="form-input"
           />
         </div>
       </div>
 
       <div className="form-group full-width">
-        <label htmlFor="message">Message *</label>
+        <label htmlFor="message">Message <span className="required">*</span></label>
         <textarea
           id="message"
           name="message"
@@ -135,12 +144,13 @@ function ContactForm() {
           rows="4"
           aria-invalid={!!errors.message}
           aria-describedby={errors.message ? 'message-error' : undefined}
-        ></textarea>
-        {errors.message && <span id="message-error" className="error-msg" role="alert">{errors.message}</span>}
+          className={`form-input form-textarea ${errors.message ? 'error' : ''}`}
+        />
+        {errors.message && <span id="message-error" className="form-error" role="alert">{errors.message}</span>}
       </div>
 
-      <button type="submit" className="btn btn-primary btn-submit">
-        Request a Demo
+      <button type="submit" className="btn btn-primary btn-submit" disabled={submitting}>
+        {submitting ? 'Sending...' : 'Request a Demo'}
       </button>
     </form>
   )

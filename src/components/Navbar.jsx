@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './Navbar.css'
 
 const navLinks = [
@@ -8,58 +8,108 @@ const navLinks = [
   { label: 'Contact', href: '#contact' },
 ]
 
-function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false)
-
-  const closeMenu = () => setMenuOpen(false)
-
-  const handleNavClick = (e, href) => {
-    e.preventDefault()
-    closeMenu()
-    const target = document.querySelector(href)
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth' })
-    }
+function handleLinkClick(e, href) {
+  e.preventDefault()
+  const target = document.querySelector(href)
+  if (target) {
+    target.scrollIntoView({ behavior: 'smooth' })
   }
+}
+
+function Navbar() {
+  const [scrolled, setScrolled] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const navRef = useRef(null)
+
+  useEffect(() => {
+    const onScroll = () => {
+      setScrolled(window.scrollY > 20)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && mobileOpen) {
+        setMobileOpen(false)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [mobileOpen])
+
+  const closeMobile = () => setMobileOpen(false)
 
   return (
-    <header className="navbar">
+    <header
+      ref={navRef}
+      className={`navbar ${scrolled ? 'scrolled' : ''} ${mobileOpen ? 'mobile-open' : ''}`}
+      role="banner"
+    >
       <div className="navbar-inner">
         <a href="#" className="logo" aria-label="Proofdesk home">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             <rect x="3" y="3" width="18" height="18" rx="4" stroke="currentColor" strokeWidth="2"/>
+            <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
           proofdesk
         </a>
 
-        <nav aria-label="Main navigation">
-          <button
-            className="menu-toggle"
-            aria-expanded={menuOpen}
-            aria-controls="mobile-menu"
-            onClick={() => setMenuOpen(prev => !prev)}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-              <line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-              <line x1="3" y1="18" x2="21" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-            </svg>
-          </button>
-
-          <ul id="mobile-menu" className={`nav-links ${menuOpen ? 'open' : ''}`}>
+        <nav className="nav-links" aria-label="Main navigation">
+          <ul className="nav-list">
             {navLinks.map(link => (
               <li key={link.label}>
-                <a href={link.href} onClick={e => handleNavClick(e, link.href)}>{link.label}</a>
+                <a
+                  href={link.href}
+                  onClick={e => { handleLinkClick(e, link.href); closeMobile(); }}
+                  className="nav-link"
+                >
+                  {link.label}
+                </a>
               </li>
             ))}
-            <li>
-              <a href="#contact" className="btn btn-primary btn-sm" onClick={e => handleNavClick(e, '#contact')}>
-                Get Started
-              </a>
-            </li>
           </ul>
         </nav>
+
+        <div className="nav-actions">
+          <a href="#contact" className="btn btn-primary nav-cta" onClick={closeMobile}>
+            Start free
+          </a>
+          <button
+            className="hamburger"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-menu"
+            aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+          >
+            <span className="hamburger-line" aria-hidden="true"></span>
+            <span className="hamburger-line" aria-hidden="true"></span>
+            <span className="hamburger-line" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      <div id="mobile-menu" className="mobile-menu" role="navigation" aria-label="Mobile navigation">
+        <div className="mobile-menu-inner">
+          <ul className="mobile-nav-list">
+            {navLinks.map(link => (
+              <li key={link.label}>
+                <a
+                  href={link.href}
+                  onClick={e => { handleLinkClick(e, link.href); closeMobile(); }}
+                  className="mobile-nav-link"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+          <a href="#contact" className="btn btn-primary mobile-cta" onClick={closeMobile}>
+            Start free
+          </a>
+        </div>
       </div>
     </header>
   )
